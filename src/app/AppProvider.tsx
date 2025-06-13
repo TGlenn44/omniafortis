@@ -1,33 +1,75 @@
 import React, { createContext, useContext, useState } from "react";
 
-type Mood = "Focused" | "Tired" | "Distracted" | "Driven";
+export interface Exercise {
+  exercise: string;
+  sets: Array<{
+    reps: number;
+    weight: number;
+  }>;
+}
 
-type WorkoutLog = {
+export interface WorkoutLog {
+  type: "workout";
   date: string;
-  lifts: { exercise: string; sets: number; reps: number; weight: number }[];
-  notes?: string;
-};
+  time: string;
+  exercises: Exercise[];
+  note?: string;
+  title?: string;
+}
 
-type AppContextType = {
-  mood: Mood;
-  setMood: (m: Mood) => void;
-  logs: WorkoutLog[];
-  addLog: (log: WorkoutLog) => void;
-};
+export interface MindsetLog {
+  type: "mindset";
+  date: string;
+  time: string;
+  mood: string;
+  notes: string;
+}
 
-const AppContext = createContext<AppContextType | null>(null);
+export interface SleepLog {
+  type: "sleep";
+  date: string;
+  time: string;
+  duration: number;
+  quality: number;
+  notes: string;
+}
 
-export const AppProvider = ({ children }: { children: React.ReactNode }) => {
-  const [mood, setMood] = useState<Mood>("Driven");
-  const [logs, setLogs] = useState<WorkoutLog[]>([]);
+export interface NutritionLog {
+  type: "nutrition";
+  date: string;
+  time: string;
+  meals: string[];
+  notes: string;
+}
 
-  const addLog = (log: WorkoutLog) => setLogs((prev) => [log, ...prev]);
+export type Log = WorkoutLog | MindsetLog | SleepLog | NutritionLog;
+
+interface AppContextType {
+  logs: Log[];
+  addLog: (log: Log) => void;
+  setLogs: React.Dispatch<React.SetStateAction<Log[]>>;
+}
+
+const AppContext = createContext<AppContextType | undefined>(undefined);
+
+export function AppProvider({ children }: { children: React.ReactNode }) {
+  const [logs, setLogs] = useState<Log[]>([]);
+
+  const addLog = (log: Log) => {
+    setLogs((prevLogs) => [...prevLogs, log]);
+  };
 
   return (
-    <AppContext.Provider value={{ mood, setMood, logs, addLog }}>
+    <AppContext.Provider value={{ logs, addLog, setLogs }}>
       {children}
     </AppContext.Provider>
   );
-};
+}
 
-export const useAppContext = () => useContext(AppContext)!;
+export function useAppContext() {
+  const context = useContext(AppContext);
+  if (context === undefined) {
+    throw new Error("useAppContext must be used within an AppProvider");
+  }
+  return context;
+}
