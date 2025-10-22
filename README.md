@@ -89,12 +89,3 @@ OmniaFortis is a **full-stack personal performance engine** for the modern hybri
 © 2025 Theodore Glenn. All rights reserved.  
 OmniaFortis™ is a protected work.  
 Unauthorized use, reproduction, or distribution of the codebase is prohibited.
-
----
-
-## Built By
-
-**Theodore Glenn**  
-- B.S. in Computer Science & Physics  
-- Former D1 Rower  
-- Full-stack dev with a mission to build software that makes athletes stronger holistically.
